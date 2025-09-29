@@ -2,7 +2,7 @@
  * Type definitions for navbar components
  */
 
-import { NavItem } from './index';
+import { NavItem } from "./index";
 
 export interface NavbarProps {
   logo?: {
@@ -16,9 +16,9 @@ export interface NavbarProps {
     email: string;
     avatar?: string;
   };
-  onUserAction?: (action: 'profile' | 'settings' | 'logout') => void;
+  onUserAction?: (action: "profile" | "settings" | "logout") => void;
   className?: string;
-  variant?: 'default' | 'transparent' | 'fixed';
+  variant?: "default" | "transparent" | "fixed";
   showMobileMenu?: boolean;
   onMobileMenuToggle?: () => void;
 }
@@ -26,14 +26,14 @@ export interface NavbarProps {
 export interface MobileMenuProps {
   isOpen: boolean;
   items: NavItem[];
-  user?: NavbarProps['user'];
+  user?: NavbarProps["user"];
   onClose: () => void;
-  onUserAction?: NavbarProps['onUserAction'];
+  onUserAction?: NavbarProps["onUserAction"];
 }
 
 export interface UserMenuProps {
-  user: NavbarProps['user'];
-  onAction: NavbarProps['onUserAction'];
+  user: NavbarProps["user"];
+  onAction: NavbarProps["onUserAction"];
   isOpen: boolean;
   onToggle: () => void;
 }

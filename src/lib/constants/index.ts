@@ -2,4 +2,4 @@
  * Constants exports
  */
 
-export { mainNavigation, footerNavigation, logoConfig } from './navigation';
+export { mainNavigation, footerNavigation, logoConfig } from "./navigation";

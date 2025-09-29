@@ -2,8 +2,8 @@
  * Custom hook for navbar functionality
  */
 
-import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export interface UseNavbarOptions {
   initialMobileMenuOpen?: boolean;

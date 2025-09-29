@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NavbarProps, MobileMenuProps, UserMenuProps } from "@/types/navbar";
+import { useState } from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { NavbarProps, MobileMenuProps, UserMenuProps } from "@/types/navbar";
 
 /**
  * Main Navbar Component
@@ -14,14 +15,12 @@ export function Navbar({
   logo,
   items,
   user,
-  onUserAction,
   className,
   variant = "default",
   showMobileMenu = true,
   onMobileMenuToggle,
 }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const pathname = usePathname();
 
   const handleMobileMenuToggle = () => {
@@ -29,18 +28,12 @@ export function Navbar({
     onMobileMenuToggle?.();
   };
 
-  const handleUserAction = (action: "profile" | "settings" | "logout") => {
-    onUserAction?.(action);
-    setIsUserMenuOpen(false);
-  };
-
   const navbarClasses = cn(
     "w-full bg-white border-b border-gray-200 shadow-sm",
-    {
-      "fixed top-0 z-50": variant === "fixed",
-      "bg-transparent border-transparent shadow-none":
-        variant === "transparent",
-    },
+    (variant === "fixed" ? "fixed top-0 z-50" : "") +
+      (variant === "transparent"
+        ? " bg-transparent border-transparent shadow-none"
+        : ""),
     className
   );
 
@@ -52,7 +45,7 @@ export function Navbar({
           <div className="flex-shrink-0">
             {logo ? (
               <Link href={logo.href || "/"} className="flex items-center">
-                <img src={logo.src} alt={logo.alt} className="h-8 w-auto" />
+                <Image src={logo.src} alt={logo.alt} className="h-8 w-auto" />
               </Link>
             ) : (
               <Link href="/" className="text-xl font-bold text-gray-900">
@@ -74,7 +67,7 @@ export function Navbar({
             </div>
           </div>
 
-          {/* User Menu / Auth */}
+          {/* User Menu / Auth
           <div className="hidden md:block">
             {user ? (
               <UserMenu
@@ -99,7 +92,7 @@ export function Navbar({
                 </Link>
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Mobile menu button */}
           {showMobileMenu && (
@@ -153,7 +146,6 @@ export function Navbar({
           items={items}
           user={user}
           onClose={() => setIsMobileMenuOpen(false)}
-          onUserAction={handleUserAction}
         />
       )}
     </nav>
@@ -167,15 +159,18 @@ function NavLink({
   item,
   isActive,
 }: {
-  item: { label: string; href: string; icon?: React.ComponentType };
+  item: {
+    label: string;
+    href: string;
+    icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  };
   isActive: boolean;
 }) {
   const linkClasses = cn(
     "px-3 py-2 rounded-md text-sm font-medium transition-colors",
-    {
-      "bg-blue-100 text-blue-700": isActive,
-      "text-gray-500 hover:text-gray-900 hover:bg-gray-50": !isActive,
-    }
+    isActive
+      ? "bg-blue-100 text-blue-700"
+      : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
   );
 
   return (
@@ -185,80 +180,6 @@ function NavLink({
         <span>{item.label}</span>
       </div>
     </Link>
-  );
-}
-
-/**
- * User Menu Component
- */
-function UserMenu({ user, onAction, isOpen, onToggle }: UserMenuProps) {
-  if (!user) return null;
-
-  return (
-    <div className="relative">
-      <button
-        onClick={onToggle}
-        className="flex items-center space-x-3 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        <span className="sr-only">Open user menu</span>
-        {user.avatar ? (
-          <img
-            className="h-8 w-8 rounded-full"
-            src={user.avatar}
-            alt={user.name}
-          />
-        ) : (
-          <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-            <span className="text-sm font-medium text-gray-700">
-              {user.name.charAt(0).toUpperCase()}
-            </span>
-          </div>
-        )}
-        <span className="text-gray-700 font-medium">{user.name}</span>
-        <svg
-          className={`h-4 w-4 text-gray-400 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
-
-      {isOpen && (
-        <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="px-4 py-2 border-b border-gray-100">
-            <p className="text-sm font-medium text-gray-900">{user.name}</p>
-            <p className="text-sm text-gray-500">{user.email}</p>
-          </div>
-          <button
-            onClick={() => onAction("profile")}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            Your Profile
-          </button>
-          <button
-            onClick={() => onAction("settings")}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            Settings
-          </button>
-          <button
-            onClick={() => onAction("logout")}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            Sign out
-          </button>
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -285,7 +206,7 @@ function MobileMenu({
             onClick={onClose}
           >
             <div className="flex items-center space-x-2">
-              {item.icon && <item.icon className="h-5 w-5" />}
+              {item.icon && <item.icon />}
               <span>{item.label}</span>
             </div>
           </Link>
@@ -295,7 +216,7 @@ function MobileMenu({
           <div className="border-t border-gray-200 pt-4">
             <div className="flex items-center px-3">
               {user.avatar ? (
-                <img
+                <Image
                   className="h-10 w-10 rounded-full"
                   src={user.avatar}
                   alt={user.name}
